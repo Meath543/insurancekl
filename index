@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新知分享資料庫</title>
+    <!-- 載入 Tailwind CSS (CDN 版本，適合靜態網頁快速部署) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 基本字體設定 */
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang TC', 'Heiti TC', 'Microsoft JhengHei', sans-serif;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50 text-gray-800 selection:bg-blue-100">
+
+    <!-- 全域背景浮水印 -->
+    <div class="fixed inset-0 pointer-events-none z-0 flex items-center justify-center overflow-hidden opacity-[0.03]">
+        <div class="transform -rotate-45 text-6xl md:text-8xl font-black text-gray-900 whitespace-nowrap">
+            MeaTh
+        </div>
+    </div>
+
+    <!-- 頂部導航 / 標題區 -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-10 relative">
+        <div class="max-w-6xl mx-auto px-6 py-8">
+            <h1 class="text-3xl font-bold tracking-tight text-gray-900 mb-2">
+                新知分享資料庫
+            </h1>
+            <p class="text-gray-500 text-sm">
+                精選保險、稅務、傳承與團隊經營重點摘要，快速掌握關鍵資訊。（內部專屬資源，請勿外傳）
+            </p>
+
+            <!-- 搜尋列 -->
+            <div class="mt-6 relative max-w-xl">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.3-4.3"></path>
+                    </svg>
+                </div>
+                <input
+                    type="text"
+                    id="search-input"
+                    class="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl leading-5 bg-gray-50 placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-colors sm:text-sm"
+                    placeholder="搜尋標題或重點關鍵字 (例如: 特留分, 芳玉姐...)"
+                />
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 py-8">
+        <!-- 分類標籤容器 -->
+        <div id="categories" class="flex flex-wrap gap-2 mb-8">
+            <!-- JavaScript 會動態產生標籤 -->
+        </div>
+
+        <!-- 內容卡片網格容器 -->
+        <div id="cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- JavaScript 會動態產生卡片 -->
+        </div>
+    </main>
+
+    <!-- 頁尾 -->
+    <footer class="border-t border-gray-200 bg-white mt-12 py-8">
+        <div class="max-w-6xl mx-auto px-6 text-center text-gray-400 text-sm">
+            &copy; <span id="year"></span> 新知分享資料庫. 整理歸納，創造價值。
+        </div>
+    </footer>
+
+    <script>
+        // 設定當前年份
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // 整理好的資料庫內容
+        const database = [
+            { id: 1, category: "稅務與傳承", title: "北一區行銷講座小劉老師", points: ["舊制房產勿贈與，變新制稅負暴增", "繼承省稅有隱憂，缺現金易起糾紛", "保險預留稅源，資產傳承神救援"], link: "https://free-sodium-62d.notion.site/1141124-19-2c9462b72e7380bab3b9e54c92596449" },
+            { id: 2, category: "稅務與傳承", title: "南西老蕭贈與", points: ["資產結構重組，應稅轉免稅守住財富", "指定受益人，打破特留分想給誰就給誰", "預留稅源神技，用保險利息繳遺產稅"], link: "https://free-sodium-62d.notion.site/1141212-m4a-1-2c9462b72e738066a7a0d7ad3adc79b7" },
+            { id: 3, category: "稅務與傳承", title: "資產傳承及稅務規劃-芳玉姐 (1)", points: ["先安養後傳承：降稅、增值、顧心願", "不談保險先估價：從閒聊中挖掘需求", "活用稅務策略：化生硬稅法為行銷利器"], link: "https://meath543.neocities.org/nb/fongu1" },
+            { id: 4, category: "稅務與傳承", title: "資產傳承及稅務規劃-芳玉姐 (2)", points: ["話題轉化：藉不動產傳承話題轉為保單業績", "稅務破解：房產繼承搭房貸抵扣遠勝於贈與", "實務運用：善用理財房貸套出現金買保單"], link: "https://meath543.neocities.org/nb/fongu2" },
+            { id: 13, category: "稅務與傳承", title: "資產傳承及稅務規劃-芳玉姐 (3)", points: ["生前特贈防爭產：公證切結聲明免除歸扣", "二親等買賣防稅：善用保單金流且禁回流", "守護身故理賠金：設信託並找法人當監察人"], link: "https://meath543.neocities.org/nb/fongu3" },
+            { id: 14, category: "稅務與傳承", title: "資產傳承及稅務規劃-芳玉姐 (4)", points: ["保單校正：舊單作退休金，引導用盈餘買新單傳承", "特留分規劃：不動產配公證遺囑，用保單補足特留分", "境外對策：不阻擋資金外移，買本土保單預留稅源"], link: "https://meath543.neocities.org/nb/fongu4" },
+            { id: 7, category: "商品與行銷", title: "中影八德", points: ["鎖定同業舊保單，啟動資產都更", "連十三年分紅達標，實績完勝AI", "左手資產右手醫療，備足退休底氣"], link: "https://free-sodium-62d.notion.site/m4a-2c9462b72e7380e1978edb3d7abb2707" },
+            { id: 8, category: "商品與行銷", title: "2025榮耀講堂 竹佑張家維", points: ["投資型保單當敲門磚，談稅務開富人門", "分紅保單掌控制權，解決分配避爭產", "房產移轉稅負重，保單傳承靈活優勢"], link: "https://free-sodium-62d.notion.site/2025-1141104-1-2c9462b72e7380deba51c3b2ea556deb" },
+            { id: 9, category: "商品與行銷", title: "鄭曜 HAA", points: ["面對超高齡，80歲後醫療費誰買單", "保費槓桿放大，沒用完還能傳承", "補足高齡缺口，實支實付再升級"], link: "https://free-sodium-62d.notion.site/HAA1141017-1-2cc462b72e7380479a2dc1e7a175a1fe" },
+            { id: 10, category: "商品與行銷", title: "2025林雅雯經理海線一姐", points: ["分紅保單三把關提高信賴", "PFK一元三用：退休與傳承", "早買退休保單以時間複利放大資產"], link: "https://free-sodium-62d.notion.site/202512-1-2cc462b72e738095aa77c750d5059bb2" },
+            { id: 11, category: "商品與行銷", title: "商品策略 李坤樹經理", points: ["終身醫療二月絕版，搶佔最後加保紅利", "分紅保單靈活領，提早實現退休自由", "隔代投保新顯學，兩年打造富足三代"], link: "https://free-sodium-62d.notion.site/114-12-10-2cc462b72e73802a835fcd3e52ddc7eb" },
+            { id: 12, category: "團隊與發展", title: "打造高績效的冠軍團隊 許博堯", points: ["拒絕人海戰術，優增優育打造冠軍團隊", "先衝件數養習慣，後拚產能轉型全能菁英", "植入國際榮耀DNA，激發夥伴自動自發成長"], link: "https://free-sodium-62d.notion.site/2c9462b72e7380b5a54ddd44813925f6" },
+            { id: 15, category: "商品與行銷", title: "張仕鎮 - 三本柱儲蓄險與退休理財策略 完整實戰大綱", points: ["儲蓄轉醫療帳戶，建構退休現金流", "歲滿期如高鐵，依客戶需求精準上車", "退休金留給自己，活化保單補足缺口"], link: "https://meath543.neocities.org/nb/chang" }
+        ];
+
+        // 將資料庫依照 id 遞減排序，確保最新上傳的文章固定顯示在開頭處
+        database.sort((a, b) => b.id - a.id);
+
+        // 取得最新兩篇文章的 ID，用來標示「最新」
+        const newestIds = database.slice(0, 2).map(item => item.id);
+
+        // 狀態管理
+        let activeCategory = "全部";
+        let searchTerm = "";
+
+        // DOM 元素
+        const categoriesContainer = document.getElementById('categories');
+        const cardsContainer = document.getElementById('cards-container');
+        const searchInput = document.getElementById('search-input');
+
+        // 圖示庫 (SVG 字串)
+        const icons = {
+            "稅務與傳承": `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><line x1="3" x2="21" y1="22" y2="22"></line><line x1="6" x2="6" y1="18" y2="11"></line><line x1="10" x2="10" y1="18" y2="11"></line><line x1="14" x2="14" y1="18" y2="11"></line><line x1="18" x2="18" y1="18" y2="11"></line><polygon points="12 2 20 7 4 7"></polygon></svg>`,
+            "商品與行銷": `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>`,
+            "團隊與發展": `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>`,
+            "全部": `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>`,
+            "external": `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2"><path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></svg>`,
+            "empty": `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto text-gray-300 mb-4"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>`
+        };
+
+        // 取得所有不重複的分類
+        const getCategoriesList = () => {
+            const list = ["全部"];
+            database.forEach(item => {
+                if (!list.includes(item.category)) {
+                    list.push(item.category);
+                }
+            });
+            return list;
+        };
+
+        // 渲染分類按鈕
+        const renderCategories = () => {
+            const categories = getCategoriesList();
+            categoriesContainer.innerHTML = categories.map(category => {
+                const isActive = activeCategory === category;
+                const baseClasses = "flex items-center px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ease-in-out cursor-pointer outline-none";
+                const activeClasses = "bg-gray-900 text-white shadow-md";
+                const inactiveClasses = "bg-white text-gray-600 border border-gray-200 hover:border-gray-300 hover:bg-gray-50";
+                
+                const iconHtml = category !== "全部" && icons[category] ? icons[category] : "";
+
+                return `
+                    <button onclick="setCategory('${category}')" class="${baseClasses} ${isActive ? activeClasses : inactiveClasses}">
+                        ${iconHtml}
+                        ${category}
+                    </button>
+                `;
+            }).join('');
+        };
+
+        // 渲染內容卡片
+        const renderCards = () => {
+            // 過濾資料
+            const filteredData = database.filter(item => {
+                const matchCategory = activeCategory === "全部" || item.category === activeCategory;
+                const matchSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                                    item.points.some(p => p.toLowerCase().includes(searchTerm.toLowerCase()));
+                return matchCategory && matchSearch;
+            });
+
+            // 無資料的狀態
+            if (filteredData.length === 0) {
+                cardsContainer.innerHTML = `
+                    <div class="col-span-full text-center py-20">
+                        ${icons.empty}
+                        <h3 class="text-lg font-medium text-gray-900">找不到相符的內容</h3>
+                        <p class="text-gray-500 mt-1">請嘗試使用其他關鍵字搜尋，或選擇其他分類。</p>
+                    </div>
+                `;
+                // 清除原有的 grid，讓 Empty 狀態置中
+                cardsContainer.className = "";
+                return;
+            }
+
+            // 恢復 grid 設定
+            cardsContainer.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6";
+
+            // 產生卡片
+            cardsContainer.innerHTML = filteredData.map(item => {
+                const pointsHtml = item.points.map(point => `
+                    <li class="flex items-start text-sm text-gray-600 leading-relaxed">
+                        <span class="mr-2 mt-1 w-1.5 h-1.5 bg-gray-300 rounded-full flex-shrink-0"></span>
+                        <span>${point}</span>
+                    </li>
+                `).join('');
+
+                // 判斷是否為最新兩篇文章，並產生對應的標籤與樣式
+                const isNew = newestIds.includes(item.id);
+                const newBadgeHtml = isNew 
+                    ? `<span class="inline-block ml-2 px-2.5 py-0.5 bg-red-500 text-white text-xs font-bold rounded-full shadow-sm animate-pulse">最新上傳 🔥</span>` 
+                    : '';
+
+                return `
+                    <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col h-full group ${isNew ? 'ring-2 ring-red-100' : ''}">
+                        <div class="mb-4">
+                            <div class="flex items-center mb-3">
+                                <span class="inline-block px-3 py-1 bg-gray-100 text-gray-600 text-xs font-semibold rounded-full">
+                                    ${item.category}
+                                </span>
+                                ${newBadgeHtml}
+                            </div>
+                            <h2 class="text-xl font-bold text-gray-900 leading-snug group-hover:text-blue-600 transition-colors">
+                                ${item.title}
+                            </h2>
+                        </div>
+                        
+                        <div class="flex-grow">
+                            <ul class="space-y-3 mb-6">
+                                ${pointsHtml}
+                            </ul>
+                        </div>
+
+                        <a href="${item.link}" target="_blank" rel="noopener noreferrer"
+                           class="mt-auto flex items-center justify-center w-full py-3 px-4 bg-gray-50 text-gray-900 font-medium text-sm rounded-xl border border-gray-200 hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-colors duration-200">
+                            閱讀完整內容
+                            ${icons.external}
+                        </a>
+                    </div>
+                `;
+            }).join('');
+        };
+
+        // 事件處理：切換分類
+        window.setCategory = (category) => {
+            activeCategory = category;
+            renderCategories();
+            renderCards();
+        };
+
+        // 事件處理：搜尋輸入
+        searchInput.addEventListener('input', (e) => {
+            searchTerm = e.target.value;
+            renderCards();
+        });
+
+        // 隱藏防護機制：當使用者複製網頁內容時，自動在結尾加上版權文字
+        document.addEventListener('copy', function(e) {
+            // 取得使用者反白選取的文字
+            const selectedText = window.getSelection().toString();
+            
+            // 如果確實有選取文字，才進行攔截
+            if (selectedText) {
+                // 設定要附加的隱藏版權文字
+                const copyrightText = "\n\n------------------------\n[本資料由 老菲 製作整理]";
+                
+                // 將加上版權文字的新內容寫入剪貼簿
+                e.clipboardData.setData('text/plain', selectedText + copyrightText);
+                
+                // 阻止瀏覽器預設的複製行為（也就是防止只複製原本的字）
+                e.preventDefault(); 
+            }
+        });
+
+        // 初始化
+        renderCategories();
+        renderCards();
+
+    </script>
+</body>
+</html>
